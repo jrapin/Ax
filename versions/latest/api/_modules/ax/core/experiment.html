@@ -105,8 +105,7 @@ src="/js/documentation_options.js">
         <span class="bp">self</span><span class="o">.</span><span class="n">_trials</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">BaseTrial</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arms_by_signature</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Arm</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">tracking_metrics</span> <span class="ow">or</span> <span class="p">[]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_tracking_metric</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_tracking_metrics</span><span class="p">(</span><span class="n">tracking_metrics</span> <span class="ow">or</span> <span class="p">[])</span>
 
         <span class="c1"># call setters defined below</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">search_space</span> <span class="o">=</span> <span class="n">search_space</span>
@@ -297,6 +296,38 @@ src="/js/documentation_options.js">
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tracking_metrics</span><span class="p">[</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="Experiment.add_tracking_metrics"><a class="viewcode-back" href="../../../core.html#ax.Experiment.add_tracking_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">add_tracking_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Metric</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"Experiment"</span><span class="p">:</span>
+        <span class="sd">"""Add a list of new metrics to the experiment.</span>
+
+<span class="sd">        If any of the metrics are already defined on the experiment,</span>
+<span class="sd">        we raise an error and don't add any of them to the experiment</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            metrics: Metrics to be added.</span>
+<span class="sd">        """</span>
+        <span class="c1"># Before setting any metrics, we validate none are already on</span>
+        <span class="c1"># the experiment</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">metric</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tracking_metrics</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Metric `</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">` already defined on experiment. "</span>
+                    <span class="s2">"Use `update_tracking_metric` to update an existing metric"</span>
+                    <span class="s2">" definition."</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">optimization_config</span>
+                <span class="ow">and</span> <span class="n">metric</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimization_config</span><span class="o">.</span><span class="n">metrics</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"Metric `</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">` already present in experiment's "</span>
+                    <span class="s2">"OptimizationConfig. Set a new OptimizationConfig without"</span>
+                    <span class="s2">" this metric before adding it to tracking metrics."</span>
+                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tracking_metrics</span><span class="p">[</span><span class="n">metric</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Experiment.update_tracking_metric"><a class="viewcode-back" href="../../../core.html#ax.Experiment.update_tracking_metric">[docs]</a>    <span class="k">def</span> <span class="nf">update_tracking_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="n">Metric</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Experiment"</span><span class="p">:</span>
