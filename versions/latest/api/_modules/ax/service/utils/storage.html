@@ -35,6 +35,7 @@ src="/js/documentation_options.js">
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
+<span class="kn">from</span> <span class="nn">ax.core.base_trial</span> <span class="kn">import</span> <span class="n">BaseTrial</span>
 <span class="kn">from</span> <span class="nn">ax.core.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
 <span class="kn">from</span> <span class="nn">ax.modelbridge.generation_strategy</span> <span class="kn">import</span> <span class="n">GenerationStrategy</span>
 <span class="kn">from</span> <span class="nn">ax.storage.sqa_store.db</span> <span class="kn">import</span> <span class="n">init_engine_and_session_factory</span>
@@ -42,7 +43,12 @@ src="/js/documentation_options.js">
     <span class="n">_load_experiment</span><span class="p">,</span>
     <span class="n">_load_generation_strategy_by_experiment_name</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ax.storage.sqa_store.save</span> <span class="kn">import</span> <span class="n">_save_experiment</span><span class="p">,</span> <span class="n">_save_generation_strategy</span>
+<span class="kn">from</span> <span class="nn">ax.storage.sqa_store.save</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_save_experiment</span><span class="p">,</span>
+    <span class="n">_save_generation_strategy</span><span class="p">,</span>
+    <span class="n">_save_new_trial</span><span class="p">,</span>
+    <span class="n">_update_trial</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ax.storage.sqa_store.structs</span> <span class="kn">import</span> <span class="n">DBSettings</span>
 <span class="kn">from</span> <span class="nn">ax.utils.common.logger</span> <span class="kn">import</span> <span class="n">_round_floats_for_logging</span><span class="p">,</span> <span class="n">get_logger</span>
 
@@ -115,21 +121,57 @@ src="/js/documentation_options.js">
     <span class="k">return</span> <span class="n">experiment</span><span class="p">,</span> <span class="n">generation_strategy</span></div>
 
 
-<div class="viewcode-block" id="save_experiment_and_generation_strategy"><a class="viewcode-back" href="../../../../service.html#ax.service.utils.storage.save_experiment_and_generation_strategy">[docs]</a><span class="k">def</span> <span class="nf">save_experiment_and_generation_strategy</span><span class="p">(</span>
-    <span class="n">experiment</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">,</span>
-    <span class="n">generation_strategy</span><span class="p">:</span> <span class="n">GenerationStrategy</span><span class="p">,</span>
-    <span class="n">db_settings</span><span class="p">:</span> <span class="n">DBSettings</span><span class="p">,</span>
+<div class="viewcode-block" id="save_generation_strategy"><a class="viewcode-back" href="../../../../service.html#ax.service.utils.storage.save_generation_strategy">[docs]</a><span class="k">def</span> <span class="nf">save_generation_strategy</span><span class="p">(</span>
+    <span class="n">generation_strategy</span><span class="p">:</span> <span class="n">GenerationStrategy</span><span class="p">,</span> <span class="n">db_settings</span><span class="p">:</span> <span class="n">DBSettings</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">"""Save experiment and generation strategy to DB.</span>
+    <span class="sd">"""Save generation strategy to DB.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        experiment: `Experiment` object.</span>
 <span class="sd">        generation_strategy: Corresponding generation strategy.</span>
 <span class="sd">        db_settings: Defines behavior for loading/saving experiment to/from db.</span>
 <span class="sd">    """</span>
-    <span class="n">save_experiment</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">experiment</span><span class="p">,</span> <span class="n">db_settings</span><span class="o">=</span><span class="n">db_settings</span><span class="p">)</span>
     <span class="n">_save_generation_strategy</span><span class="p">(</span>
         <span class="n">generation_strategy</span><span class="o">=</span><span class="n">generation_strategy</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">db_settings</span><span class="o">.</span><span class="n">encoder</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_new_trial"><a class="viewcode-back" href="../../../../service.html#ax.service.utils.storage.save_new_trial">[docs]</a><span class="k">def</span> <span class="nf">save_new_trial</span><span class="p">(</span>
+    <span class="n">experiment</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">,</span> <span class="n">trial</span><span class="p">:</span> <span class="n">BaseTrial</span><span class="p">,</span> <span class="n">db_settings</span><span class="p">:</span> <span class="n">DBSettings</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Save experiment to db.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        experiment: `Experiment` object.</span>
+<span class="sd">        trial: `BaseTrial` object.</span>
+<span class="sd">        db_settings: Defines behavior for loading/saving experiment to/from db.</span>
+<span class="sd">    """</span>
+    <span class="n">init_engine_and_session_factory</span><span class="p">(</span><span class="n">creator</span><span class="o">=</span><span class="n">db_settings</span><span class="o">.</span><span class="n">creator</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">db_settings</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">_save_new_trial</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">experiment</span><span class="p">,</span> <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">db_settings</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Saved trial </span><span class="si">{</span><span class="n">trial</span><span class="o">.</span><span class="n">index</span><span class="si">}</span><span class="s2"> in "</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_round_floats_for_logging</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="si">}</span><span class="s2"> seconds"</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_updated_trial"><a class="viewcode-back" href="../../../../service.html#ax.service.utils.storage.save_updated_trial">[docs]</a><span class="k">def</span> <span class="nf">save_updated_trial</span><span class="p">(</span>
+    <span class="n">experiment</span><span class="p">:</span> <span class="n">Experiment</span><span class="p">,</span> <span class="n">trial</span><span class="p">:</span> <span class="n">BaseTrial</span><span class="p">,</span> <span class="n">db_settings</span><span class="p">:</span> <span class="n">DBSettings</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Save experiment to db.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        experiment: `Experiment` object.</span>
+<span class="sd">        trial: `BaseTrial` object.</span>
+<span class="sd">        db_settings: Defines behavior for loading/saving experiment to/from db.</span>
+<span class="sd">    """</span>
+    <span class="n">init_engine_and_session_factory</span><span class="p">(</span><span class="n">creator</span><span class="o">=</span><span class="n">db_settings</span><span class="o">.</span><span class="n">creator</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">db_settings</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">_update_trial</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">experiment</span><span class="p">,</span> <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">db_settings</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Saved trial </span><span class="si">{</span><span class="n">trial</span><span class="o">.</span><span class="n">index</span><span class="si">}</span><span class="s2"> in "</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_round_floats_for_logging</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span><span class="si">}</span><span class="s2"> seconds"</span>
     <span class="p">)</span></div>
 </pre></div>
 </div>
