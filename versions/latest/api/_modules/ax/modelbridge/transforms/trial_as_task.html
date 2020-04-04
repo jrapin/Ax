@@ -125,6 +125,12 @@ src="/js/documentation_options.js">
 
 <div class="viewcode-block" id="TrialAsTask.transform_search_space"><a class="viewcode-back" href="../../../../modelbridge.html#ax.modelbridge.transforms.trial_as_task.TrialAsTask.transform_search_space">[docs]</a>    <span class="k">def</span> <span class="nf">transform_search_space</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_space</span><span class="p">:</span> <span class="n">SearchSpace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchSpace</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">level_dict</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trial_level_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">level_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">level_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">level_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"TrialAsTask transform expects 2+ task params, "</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">"only 1 found: </span><span class="si">{</span><span class="n">level_values</span><span class="si">}</span><span class="s2">"</span>
+                <span class="p">)</span>
             <span class="n">trial_param</span> <span class="o">=</span> <span class="n">ChoiceParameter</span><span class="p">(</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">p_name</span><span class="p">,</span>
                 <span class="n">parameter_type</span><span class="o">=</span><span class="n">ParameterType</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span>
@@ -133,7 +139,7 @@ src="/js/documentation_options.js">
                 <span class="c1"># `ax.core.parameter.ChoiceParameter.__init__` but got</span>
                 <span class="c1"># `List[str]`.</span>
                 <span class="c1"># pyre-fixme[6]:</span>
-                <span class="n">values</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">level_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
+                <span class="n">values</span><span class="o">=</span><span class="n">level_values</span><span class="p">,</span>
                 <span class="n">is_ordered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">is_task</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
