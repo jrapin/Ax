@@ -249,7 +249,19 @@ src="/js/documentation_options.js">
 
 <span class="sd">          :paramref:`~.relationship.argument` may also be passed as a callable</span>
 <span class="sd">          function which is evaluated at mapper initialization time, and may</span>
-<span class="sd">          be passed as a Python-evaluable string when using Declarative.</span>
+<span class="sd">          be passed as a string name when using Declarative.</span>
+
+<span class="sd">          .. warning:: Prior to SQLAlchemy 1.3.16, this value is interpreted</span>
+<span class="sd">             using Python's ``eval()`` function.</span>
+<span class="sd">             **DO NOT PASS UNTRUSTED INPUT TO THIS STRING**.</span>
+<span class="sd">             See :ref:`declarative_relationship_eval` for details on</span>
+<span class="sd">             declarative evaluation of :func:`.relationship` arguments.</span>
+
+<span class="sd">          .. versionchanged 1.3.16::</span>
+
+<span class="sd">             The string evaluation of the main "argument" no longer accepts an</span>
+<span class="sd">             open ended Python expression, instead only accepting a string</span>
+<span class="sd">             class name or dotted package-qualified name.</span>
 
 <span class="sd">          .. seealso::</span>
 
@@ -268,6 +280,12 @@ src="/js/documentation_options.js">
 <span class="sd">          be a string argument noting the name of a :class:`.Table` that is</span>
 <span class="sd">          present in the :class:`.MetaData` collection associated with the</span>
 <span class="sd">          parent-mapped :class:`.Table`.</span>
+
+<span class="sd">          .. warning:: When passed as a Python-evaluable string, the</span>
+<span class="sd">             argument is interpreted using Python's ``eval()`` function.</span>
+<span class="sd">             **DO NOT PASS UNTRUSTED INPUT TO THIS STRING**.</span>
+<span class="sd">             See :ref:`declarative_relationship_eval` for details on</span>
+<span class="sd">             declarative evaluation of :func:`.relationship` arguments.</span>
 
 <span class="sd">          The :paramref:`~.relationship.secondary` keyword argument is</span>
 <span class="sd">          typically applied in the case where the intermediary :class:`.Table`</span>
@@ -507,6 +525,12 @@ src="/js/documentation_options.js">
 <span class="sd">          and may be passed as a Python-evaluable string when using</span>
 <span class="sd">          Declarative.</span>
 
+<span class="sd">          .. warning:: When passed as a Python-evaluable string, the</span>
+<span class="sd">             argument is interpreted using Python's ``eval()`` function.</span>
+<span class="sd">             **DO NOT PASS UNTRUSTED INPUT TO THIS STRING**.</span>
+<span class="sd">             See :ref:`declarative_relationship_eval` for details on</span>
+<span class="sd">             declarative evaluation of :func:`.relationship` arguments.</span>
+
 <span class="sd">          .. seealso::</span>
 
 <span class="sd">            :ref:`relationship_foreign_keys`</span>
@@ -666,6 +690,12 @@ src="/js/documentation_options.js">
 <span class="sd">          function which is evaluated at mapper initialization time, and may</span>
 <span class="sd">          be passed as a Python-evaluable string when using Declarative.</span>
 
+<span class="sd">          .. warning:: When passed as a Python-evaluable string, the</span>
+<span class="sd">             argument is interpreted using Python's ``eval()`` function.</span>
+<span class="sd">             **DO NOT PASS UNTRUSTED INPUT TO THIS STRING**.</span>
+<span class="sd">             See :ref:`declarative_relationship_eval` for details on</span>
+<span class="sd">             declarative evaluation of :func:`.relationship` arguments.</span>
+
 <span class="sd">        :param passive_deletes=False:</span>
 <span class="sd">           Indicates loading behavior during delete operations.</span>
 
@@ -758,6 +788,12 @@ src="/js/documentation_options.js">
 <span class="sd">          and may be passed as a Python-evaluable string when using</span>
 <span class="sd">          Declarative.</span>
 
+<span class="sd">          .. warning:: When passed as a Python-evaluable string, the</span>
+<span class="sd">             argument is interpreted using Python's ``eval()`` function.</span>
+<span class="sd">             **DO NOT PASS UNTRUSTED INPUT TO THIS STRING**.</span>
+<span class="sd">             See :ref:`declarative_relationship_eval` for details on</span>
+<span class="sd">             declarative evaluation of :func:`.relationship` arguments.</span>
+
 <span class="sd">          .. seealso::</span>
 
 <span class="sd">              :ref:`relationship_primaryjoin`</span>
@@ -770,6 +806,12 @@ src="/js/documentation_options.js">
 <span class="sd">          callable function which is evaluated at mapper initialization time,</span>
 <span class="sd">          and may be passed as a Python-evaluable string when using</span>
 <span class="sd">          Declarative.</span>
+
+<span class="sd">          .. warning:: When passed as a Python-evaluable string, the</span>
+<span class="sd">             argument is interpreted using Python's ``eval()`` function.</span>
+<span class="sd">             **DO NOT PASS UNTRUSTED INPUT TO THIS STRING**.</span>
+<span class="sd">             See :ref:`declarative_relationship_eval` for details on</span>
+<span class="sd">             declarative evaluation of :func:`.relationship` arguments.</span>
 
 <span class="sd">          .. seealso::</span>
 
@@ -804,6 +846,12 @@ src="/js/documentation_options.js">
 <span class="sd">          callable function which is evaluated at mapper initialization time,</span>
 <span class="sd">          and may be passed as a Python-evaluable string when using</span>
 <span class="sd">          Declarative.</span>
+
+<span class="sd">          .. warning:: When passed as a Python-evaluable string, the</span>
+<span class="sd">             argument is interpreted using Python's ``eval()`` function.</span>
+<span class="sd">             **DO NOT PASS UNTRUSTED INPUT TO THIS STRING**.</span>
+<span class="sd">             See :ref:`declarative_relationship_eval` for details on</span>
+<span class="sd">             declarative evaluation of :func:`.relationship` arguments.</span>
 
 <span class="sd">          .. seealso::</span>
 
