@@ -38,6 +38,19 @@ src="/js/documentation_options.js">
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 
+<span class="n">DS_FRMT</span> <span class="o">=</span> <span class="s2">"%Y-%m-</span><span class="si">%d</span><span class="s2">"</span>  <span class="c1"># Format to use for parsing DS strings.</span>
+
+
+<div class="viewcode-block" id="to_ds"><a class="viewcode-back" href="../../../../utils.html#ax.utils.common.timeutils.to_ds">[docs]</a><span class="k">def</span> <span class="nf">to_ds</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">"""Convert a `datetime` to a DS string."""</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">DS_FRMT</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_ts"><a class="viewcode-back" href="../../../../utils.html#ax.utils.common.timeutils.to_ts">[docs]</a><span class="k">def</span> <span class="nf">to_ts</span><span class="p">(</span><span class="n">ds</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+    <span class="sd">"""Convert a DS string to a `datetime`."""</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">DS_FRMT</span><span class="p">)</span></div>
+
+
 <span class="k">def</span> <span class="nf">_ts_to_pandas</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">:</span>  <span class="c1"># pyre-ignore[11]</span>
     <span class="sd">"""Convert int timestamp into pandas timestamp."""</span>
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">ts</span><span class="p">))</span>
