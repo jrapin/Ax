@@ -97,8 +97,13 @@ src="/js/documentation_options.js">
         <span class="n">save_new_trial</span><span class="p">,</span>
         <span class="n">save_updated_trial</span><span class="p">,</span>
     <span class="p">)</span>
+
+    <span class="n">retry_exception_type_tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">OperationalError</span><span class="p">,)</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="n">DBSettings</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Return a list of suppressable exceptions not including unimportable ones.</span>
+    <span class="c1"># pyre-fixme[9]: declared as `Tuple[...[OperationalError]]` but used as `Tuple[]`.</span>
+    <span class="n">retry_exception_type_tuple</span> <span class="o">=</span> <span class="p">()</span>
 
 
 <div class="viewcode-block" id="AxClient"><a class="viewcode-back" href="../../../service.html#ax.service.ax_client.AxClient">[docs]</a><span class="k">class</span> <span class="nc">AxClient</span><span class="p">:</span>
@@ -855,7 +860,7 @@ src="/js/documentation_options.js">
     <span class="nd">@retry_on_exception</span><span class="p">(</span>
         <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_type</span><span class="o">=</span><span class="p">(</span><span class="n">OperationalError</span><span class="p">,),</span>
+        <span class="n">exception_type</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">_save_experiment_to_db_if_possible</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -874,7 +879,7 @@ src="/js/documentation_options.js">
     <span class="nd">@retry_on_exception</span><span class="p">(</span>
         <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_type</span><span class="o">=</span><span class="p">(</span><span class="n">OperationalError</span><span class="p">,),</span>
+        <span class="n">exception_type</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">_save_new_trial_to_db_if_possible</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">:</span> <span class="n">BaseTrial</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -895,7 +900,7 @@ src="/js/documentation_options.js">
     <span class="nd">@retry_on_exception</span><span class="p">(</span>
         <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_type</span><span class="o">=</span><span class="p">(</span><span class="n">OperationalError</span><span class="p">,),</span>
+        <span class="n">exception_type</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">_save_updated_trial_to_db_if_possible</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">:</span> <span class="n">BaseTrial</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -916,7 +921,7 @@ src="/js/documentation_options.js">
     <span class="nd">@retry_on_exception</span><span class="p">(</span>
         <span class="n">retries</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
         <span class="n">default_return_on_suppression</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">exception_type</span><span class="o">=</span><span class="p">(</span><span class="n">OperationalError</span><span class="p">,),</span>
+        <span class="n">exception_type</span><span class="o">=</span><span class="n">retry_exception_type_tuple</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">_save_generation_strategy_to_db_if_possible</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">suppress_all_errors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
